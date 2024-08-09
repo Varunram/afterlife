@@ -6,8 +6,19 @@ import { ResizableBox } from "react-resizable";
 import "react-resizable/css/styles.css";
 import "../app/globals.css";
 
+// Define the type for your style objects
+interface TerminalStyles {
+  terminalContainer: React.CSSProperties;
+  terminalHeader: React.CSSProperties;
+  terminalTitle: React.CSSProperties;
+  closeButton: React.CSSProperties;
+  terminalBody: React.CSSProperties;
+}
+
+
+
 // Terminal Styles
-const terminalStyles = {
+const terminalStyles: TerminalStyles = {
   terminalContainer: {
     border: "1px solid",
     borderRadius: "8px",
@@ -43,8 +54,15 @@ const terminalStyles = {
   },
 };
 
+// Define the type for your style objects
+interface AppStyles {
+  main: React.CSSProperties;
+  terminalTop: React.CSSProperties;
+  terminalBottom: React.CSSProperties;
+}
+
 // App Styles for Triangular Layout
-const appStyles = {
+const appStyles: AppStyles = {
   main: {
     display: "flex",
     flexDirection: "column",
@@ -149,29 +167,32 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     }
   };
 
-  const commands: { [key: string]: () => string | void } = {
-    help: () => {
-      const availableCommands = Object.keys(commands)
-        .filter((command) => command !== "help")
-        .map((command) => `<span class="clickable-command">${command}</span>`)
-        .join("<br>");
-      appendToTerminal(`Available commands:<br>${availableCommands}`, false, false); // No line gap before this output
-      document.querySelectorAll(".clickable-command").forEach((element) => {
-        element.onclick = () => {
-          if (terminalInputRef.current) {
-            terminalInputRef.current.value = element.innerText;
-            terminalInputRef.current.focus();
-          }
-        };
-      });
-    },
-    docs: () => "Visit https://docs.joinwarp.com to get started.",
-    support: () => "Email support@joinwarp.com for assistance.",
-    community: () => "Join our community on Discord and GitHub.",
-    start: () => {
-      window.location.href = "https://www.joinwarp.com/qualification";
-    },
-  };
+const commands: { [key: string]: () => string | void } = {
+  help: () => {
+    const availableCommands = Object.keys(commands)
+      .filter((command) => command !== "help")
+      .map((command) => `<span class="clickable-command">${command}</span>`)
+      .join("<br>");
+    appendToTerminal(`Available commands:<br>${availableCommands}`, false, false); // No line gap before this output
+    
+    // Cast to HTMLElement when assigning onclick
+    document.querySelectorAll(".clickable-command").forEach((element) => {
+      (element as HTMLElement).onclick = () => {
+        if (terminalInputRef.current) {
+          terminalInputRef.current.value = (element as HTMLElement).innerText;
+          terminalInputRef.current.focus();
+        }
+      };
+    });
+  },
+  docs: () => "Visit https://docs.joinwarp.com to get started.",
+  support: () => "Email support@joinwarp.com for assistance.",
+  community: () => "Join our community on Discord and GitHub.",
+  start: () => {
+    window.location.href = "https://www.joinwarp.com/qualification";
+  },
+};
+
   
 
   const handleCommand = (input: string) => {
@@ -314,10 +335,12 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
         .map((command) => `<span class="clickable-command">${command}</span>`)
         .join("<br>");
       appendToTerminal(`Available commands:<br>${availableCommands}`, false, false); // No line gap before this output
+      
       document.querySelectorAll(".clickable-command").forEach((element) => {
-        element.onclick = () => {
+        // Cast to HTMLElement before setting onclick
+        (element as HTMLElement).onclick = () => {
           if (terminalInputRef.current) {
-            terminalInputRef.current.value = element.innerText;
+            terminalInputRef.current.value = (element as HTMLElement).innerText;
             terminalInputRef.current.focus();
           }
         };
@@ -327,6 +350,7 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     team: () => "Our team consists of talented developers passionate about innovation.",
     payroll: () => "Warp offers a transparent and competitive payroll system. Do the start command to start payrolling now.",
   };
+  
 
   const handleCommand = (input: string) => {
     const command = commands[input];
@@ -603,32 +627,35 @@ const MemeTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     }
   };
 
-  const commands: { [key: string]: () => string | void } = {
-    me: () => {
-      const availableCommands = Object.keys(commands)
-        .filter((command) => command !== "me")
-        .map((command) => `<span class="clickable-command">${command}</span>`)
-        .join("<br>");
-      appendToTerminal(`Available commands:<br>${availableCommands}`);
-      document.querySelectorAll(".clickable-command").forEach((element) => {
-        element.addEventListener("click", () => {
-          if (terminalInputRef.current) {
-            terminalInputRef.current.value = element.innerText;
-            terminalInputRef.current.focus();
-          }
-        });
+const commands: { [key: string]: () => string | void } = {
+  me: () => {
+    const availableCommands = Object.keys(commands)
+      .filter((command) => command !== "me")
+      .map((command) => `<span class="clickable-command">${command}</span>`)
+      .join("<br>");
+    appendToTerminal(`Available commands:<br>${availableCommands}`);
+    
+    document.querySelectorAll(".clickable-command").forEach((element) => {
+      // Cast to HTMLElement before adding event listener
+      (element as HTMLElement).addEventListener("click", () => {
+        if (terminalInputRef.current) {
+          terminalInputRef.current.value = (element as HTMLElement).innerText;
+          terminalInputRef.current.focus();
+        }
       });
-    },
-    joke: () => "Why do programmers prefer dark mode? Because the light attracts bugs!",
-    meme: () => {
-      const memes = [
-        "https://i.imgflip.com/8zstno.jpg",
-      ];
-      const randomMeme = memes[Math.floor(Math.random() * memes.length)];
-      return `<img src="${randomMeme}" alt="Meme" style="max-width:100%; width: 200px; height: 400px;">`;
-    },
-    return: () => onClose(),
-  };
+    });
+  },
+  joke: () => "Why do programmers prefer dark mode? Because the light attracts bugs!",
+  meme: () => {
+    const memes = [
+      "https://i.imgflip.com/8zstno.jpg",
+    ];
+    const randomMeme = memes[Math.floor(Math.random() * memes.length)];
+    return `<img src="${randomMeme}" alt="Meme" style="max-width:100%; width: 200px; height: 400px;">`;
+  },
+  return: () => onClose(),
+};
+
 
   const handleCommand = (input: string) => {
     const command = commands[input];
@@ -636,7 +663,7 @@ const MemeTerminal: React.FC<TerminalProps> = ({ onClose }) => {
       const response = command();
       if (response) appendToTerminal(response);
     } else {
-      appendToTerminal(`Command not found: ${input}`, true);
+      appendToTerminal(`Command not found: ${input}`);
     }
 
     if (terminalInputRef.current) {
