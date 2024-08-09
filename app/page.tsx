@@ -20,12 +20,10 @@ const Page: React.FC = () => {
     const hasAnimatedBefore = localStorage.getItem("hasAnimated");
 
     if (!hasAnimatedBefore) {
-      // Play the initial animation before the welcome screen
       animatePageIn();
       localStorage.setItem("hasAnimated", "true");
     }
 
-    // Display the welcome screen for 2 seconds
     const welcomeTimer = setTimeout(() => {
       setShowWelcome(false);
     }, 2000);
@@ -34,7 +32,7 @@ const Page: React.FC = () => {
   }, []);
 
   if (!mounted) {
-    return null; // Render nothing until the component is mounted
+    return null; 
   }
 
   if (showWelcome) {

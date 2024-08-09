@@ -68,8 +68,6 @@ interface TerminalProps {
   onClose: () => void;
 }
 
-// Terminal Styles
-// ... [Rest of your code]
 
 const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   const [lastErrorElement, setLastErrorElement] = useState<HTMLElement | null>(
@@ -234,7 +232,6 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   );
 };
 
-// ... [Rest of your code]
 
 const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   const [lastErrorElement, setLastErrorElement] = useState<HTMLElement | null>(null);
@@ -565,7 +562,6 @@ const MemeTerminal: React.FC<TerminalProps> = ({ onClose }) => {
         </div>`;
       terminalInputRef.current = document.getElementById("meme-input") as HTMLInputElement;
 
-      // Add event listener for the me command click
       const meCommandElement = document.getElementById("me-command");
       if (meCommandElement) {
         meCommandElement.addEventListener("click", () => {

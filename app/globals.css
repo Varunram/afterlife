@@ -82,13 +82,13 @@
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: repeat(10, 1fr); /* Adjust the number of columns as needed */
-  grid-template-rows: repeat(10, 1fr); /* Adjust the number of rows as needed */
+  grid-template-columns: repeat(10, 1fr); 
+  grid-template-rows: repeat(10, 1fr); 
   z-index: 1000;
 }
 
 .page-loader div {
-  background-color: #000; /* Or any color you prefer for the loading blocks */
+  background-color: #000; 
   animation: block-fade 0.6s ease-in-out forwards;
   opacity: 1;
 }
@@ -116,13 +116,12 @@
   opacity: 1;
 }
 
-/* globals.css */
 :root {
   --banner-light-color: black;
   --banner-dark-color: white;
 }
 
-/* Banner class for automatic color */
+
 .bg-banner {
   background-color: var(--banner-light-color);
 }
@@ -133,7 +132,7 @@
 }
 
 .input-line .prompt {
-  color: #FF8C00; /* Changes the color of the prompt ($) */
+  color: #FF8C00; 
 }
 
 .clickable-command {
@@ -143,27 +142,25 @@
 }
 
 .clickable-command:hover {
-  text-decoration: none; /* Ensure no underline on hover */
+  text-decoration: none; 
 }
 
 
 .input-line input {
-  background-color: transparent; /* Makes the background color of the input field transparent */
-  border: 1px  ; /* Optional: Border color matches the text color */
+  background-color: transparent; 
+  border: 1px  ; 
 }
 
-/* globals.css */
 .animate {
-  /* Example animation using CSS (if needed) */
   animation: slideIn 1s ease-in-out forwards;
 }
 
-/* Default (light mode) styles for resize handles */
+
 .react-resizable-handle {
-  background-color: transparent; /* Light gray for light mode */
+  background-color: transparent; 
 }
 
-/* Dark mode styles for resize handles */
+
 @media (prefers-color-scheme: dark) {
   .react-resizable-handle {
     background-color: white; 

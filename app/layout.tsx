@@ -12,13 +12,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { resolvedTheme } = useTheme(); // Get the resolved theme
+  const { resolvedTheme } = useTheme(); 
   const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
     if (!hasLoaded) {
-      animatePageIn(); // Trigger the page-in animation on initial load
-      setHasLoaded(true); // Mark as loaded after animation
+      animatePageIn(); 
+      setHasLoaded(true);
     }
   }, [hasLoaded]);
 
