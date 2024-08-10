@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import Nav from "../components/Nav";
-import Footer from "../components/Footer"
+import Footer from "../components/Footer";
 import { animatePageIn } from "@/utils/animations";
 import { Terminal } from "lucide-react";
 import TerminalMain from "@/components/TerminalMain";
@@ -32,7 +32,7 @@ const Page: React.FC = () => {
   }, []);
 
   if (!mounted) {
-    return null; 
+    return null;
   }
 
   if (showWelcome) {

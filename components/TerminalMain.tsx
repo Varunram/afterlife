@@ -15,6 +15,8 @@ interface TerminalStyles {
   terminalBody: React.CSSProperties;
 }
 
+
+
 // Terminal Styles
 const terminalStyles: TerminalStyles = {
   terminalContainer: {
@@ -84,6 +86,7 @@ interface TerminalProps {
   onClose: () => void;
 }
 
+
 const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   const [lastErrorElement, setLastErrorElement] = useState<HTMLElement | null>(
     null
@@ -105,11 +108,11 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
       ) as HTMLInputElement;
 
       // Add event listener for the help command click
-      const helpCommandElement = document.getElementById("help-command");
+      const helpCommandElement = document.getElementById('help-command');
       if (helpCommandElement) {
-        helpCommandElement.addEventListener("click", () => {
+        helpCommandElement.addEventListener('click', () => {
           if (terminalInputRef.current) {
-            terminalInputRef.current.value = "help";
+            terminalInputRef.current.value = 'help';
             terminalInputRef.current.focus();
           }
         });
@@ -136,11 +139,7 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     };
   }, []);
 
-  const appendToTerminal = (
-    text: string,
-    isError = false,
-    addLineGap = true
-  ) => {
+  const appendToTerminal = (text: string, isError = false, addLineGap = true) => {
     const newElement = document.createElement("p");
     newElement.innerHTML = addLineGap ? `<br>${text}` : text; // Conditionally add line gap
 
@@ -168,35 +167,33 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     }
   };
 
-  const commands: { [key: string]: () => string | void } = {
-    help: () => {
-      const availableCommands = Object.keys(commands)
-        .filter((command) => command !== "help")
-        .map((command) => `<span class="clickable-command">${command}</span>`)
-        .join("<br>");
-      appendToTerminal(
-        `Available commands:<br>${availableCommands}`,
-        false,
-        false
-      ); // No line gap before this output
+const commands: { [key: string]: () => string | void } = {
+  help: () => {
+    const availableCommands = Object.keys(commands)
+      .filter((command) => command !== "help")
+      .map((command) => `<span class="clickable-command">${command}</span>`)
+      .join("<br>");
+    appendToTerminal(`Available commands:<br>${availableCommands}`, false, false); // No line gap before this output
+    
+    // Cast to HTMLElement when assigning onclick
+    document.querySelectorAll(".clickable-command").forEach((element) => {
+      (element as HTMLElement).onclick = () => {
+        if (terminalInputRef.current) {
+          terminalInputRef.current.value = (element as HTMLElement).innerText;
+          terminalInputRef.current.focus();
+        }
+      };
+    });
+  },
+  docs: () => "Visit https://docs.joinwarp.com to get started.",
+  support: () => "Email support@joinwarp.com for assistance.",
+  community: () => "Join our community on Discord and GitHub.",
+  start: () => {
+    window.location.href = "https://www.joinwarp.com/qualification";
+  },
+};
 
-      // Cast to HTMLElement when assigning onclick
-      document.querySelectorAll(".clickable-command").forEach((element) => {
-        (element as HTMLElement).onclick = () => {
-          if (terminalInputRef.current) {
-            terminalInputRef.current.value = (element as HTMLElement).innerText;
-            terminalInputRef.current.focus();
-          }
-        };
-      });
-    },
-    docs: () => "Visit https://docs.joinwarp.com to get started.",
-    support: () => "Email support@joinwarp.com for assistance.",
-    community: () => "Join our community on Discord and GitHub.",
-    start: () => {
-      window.location.href = "https://www.joinwarp.com/qualification";
-    },
-  };
+  
 
   const handleCommand = (input: string) => {
     const command = commands[input];
@@ -256,10 +253,9 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   );
 };
 
+
 const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
-  const [lastErrorElement, setLastErrorElement] = useState<HTMLElement | null>(
-    null
-  );
+  const [lastErrorElement, setLastErrorElement] = useState<HTMLElement | null>(null);
   const terminalBodyRef = useRef<HTMLDivElement>(null);
   const terminalInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -288,10 +284,7 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     }
 
     const handleEnterKey = (event: KeyboardEvent) => {
-      if (
-        event.key === "Enter" &&
-        document.activeElement === terminalInputRef.current
-      ) {
+      if (event.key === "Enter" && document.activeElement === terminalInputRef.current) {
         event.preventDefault();
         const input = terminalInputRef.current?.value.trim().toLowerCase();
         if (input) {
@@ -307,11 +300,7 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     };
   }, []);
 
-  const appendToTerminal = (
-    text: string,
-    isError = false,
-    addLineGap = true
-  ) => {
+  const appendToTerminal = (text: string, isError = false, addLineGap = true) => {
     const newElement = document.createElement("p");
     newElement.innerHTML = addLineGap ? `<br>${text}` : text; // Conditionally add line gap
 
@@ -345,12 +334,8 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
         .filter((command) => command !== "about") // Exclude 'about' from the list
         .map((command) => `<span class="clickable-command">${command}</span>`)
         .join("<br>");
-      appendToTerminal(
-        `Available commands:<br>${availableCommands}`,
-        false,
-        false
-      ); // No line gap before this output
-
+      appendToTerminal(`Available commands:<br>${availableCommands}`, false, false); // No line gap before this output
+      
       document.querySelectorAll(".clickable-command").forEach((element) => {
         // Cast to HTMLElement before setting onclick
         (element as HTMLElement).onclick = () => {
@@ -362,11 +347,10 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
       });
     },
     info: () => "Warp is a futuristic platform for developers.",
-    team: () =>
-      "Our team consists of talented developers passionate about innovation.",
-    payroll: () =>
-      "Warp offers a transparent and competitive payroll system. Do the start command to start payrolling now.",
+    team: () => "Our team consists of talented developers passionate about innovation.",
+    payroll: () => "Warp offers a transparent and competitive payroll system. Do the start command to start payrolling now.",
   };
+  
 
   const handleCommand = (input: string) => {
     const command = commands[input];
@@ -427,9 +411,7 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
 };
 
 const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
-  const [lastErrorElement, setLastErrorElement] = useState<HTMLElement | null>(
-    null
-  );
+  const [lastErrorElement, setLastErrorElement] = useState<HTMLElement | null>(null);
   const terminalBodyRef = useRef<HTMLDivElement>(null);
   const terminalInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -458,10 +440,7 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     }
 
     const handleEnterKey = (event: KeyboardEvent) => {
-      if (
-        event.key === "Enter" &&
-        document.activeElement === terminalInputRef.current
-      ) {
+      if (event.key === "Enter" && document.activeElement === terminalInputRef.current) {
         event.preventDefault();
         const input = terminalInputRef.current?.value.trim().toLowerCase();
         if (input) {
@@ -477,11 +456,7 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     };
   }, []);
 
-  const appendToTerminal = (
-    text: string,
-    isError = false,
-    addLineGap = true
-  ) => {
+  const appendToTerminal = (text: string, isError = false, addLineGap = true) => {
     const newElement = document.createElement("p");
     newElement.innerHTML = addLineGap ? `<br>${text}` : text; // Conditionally add line gap
 
@@ -512,24 +487,20 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   const commands: { [key: string]: () => string | void } = {
     jobs: () => {
       const availableCommands = Object.keys(commands)
-        .filter((command) => command !== "jobs")
-        .map((command) => `<span class="clickable-command">${command}</span>`)
-        .join("<br>");
-      appendToTerminal(
-        `Available commands:<br>${availableCommands}`,
-        false,
-        false
-      ); // No line gap before this output
-      document.querySelectorAll(".clickable-command").forEach((element) => {
-        element.addEventListener("click", () => {
+        .filter(command => command !== 'jobs')
+        .map(command => `<span class="clickable-command">${command}</span>`)
+        .join('<br>');
+      appendToTerminal(`Available commands:<br>${availableCommands}`, false, false); // No line gap before this output
+      document.querySelectorAll('.clickable-command').forEach(element => {
+        element.addEventListener('click', () => {
           terminalInputRef.current!.value = (element as HTMLElement).innerText;
           terminalInputRef.current!.focus();
         });
       });
     },
-    careers: () => "Explore our open positions in the Careers section.",
-    apply: () => "Visit our Careers page to apply for a position.",
-    benefits: () => "We offer comprehensive benefits to our employees.",
+    careers: () => 'Explore our open positions in the Careers section.',
+    apply: () => 'Visit our Careers page to apply for a position.',
+    benefits: () => 'We offer comprehensive benefits to our employees.',
   };
 
   const handleCommand = (input: string) => {
@@ -613,9 +584,7 @@ const MemeTerminal: React.FC<TerminalProps> = ({ onClose }) => {
             <span class="prompt">$</span>
             <input type="text" id="meme-input" autocomplete="off">
         </div>`;
-      terminalInputRef.current = document.getElementById(
-        "meme-input"
-      ) as HTMLInputElement;
+      terminalInputRef.current = document.getElementById("meme-input") as HTMLInputElement;
 
       const meCommandElement = document.getElementById("me-command");
       if (meCommandElement) {
@@ -629,10 +598,7 @@ const MemeTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     }
 
     const handleEnterKey = (event: KeyboardEvent) => {
-      if (
-        event.key === "Enter" &&
-        document.activeElement === terminalInputRef.current
-      ) {
+      if (event.key === "Enter" && document.activeElement === terminalInputRef.current) {
         event.preventDefault();
         const input = terminalInputRef.current?.value.trim().toLowerCase();
         if (input) {
@@ -661,33 +627,35 @@ const MemeTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     }
   };
 
-  const commands: { [key: string]: () => string | void } = {
-    me: () => {
-      const availableCommands = Object.keys(commands)
-        .filter((command) => command !== "me")
-        .map((command) => `<span class="clickable-command">${command}</span>`)
-        .join("<br>");
-      appendToTerminal(`Available commands:<br>${availableCommands}`);
-
-      document.querySelectorAll(".clickable-command").forEach((element) => {
-        // Cast to HTMLElement before adding event listener
-        (element as HTMLElement).addEventListener("click", () => {
-          if (terminalInputRef.current) {
-            terminalInputRef.current.value = (element as HTMLElement).innerText;
-            terminalInputRef.current.focus();
-          }
-        });
+const commands: { [key: string]: () => string | void } = {
+  me: () => {
+    const availableCommands = Object.keys(commands)
+      .filter((command) => command !== "me")
+      .map((command) => `<span class="clickable-command">${command}</span>`)
+      .join("<br>");
+    appendToTerminal(`Available commands:<br>${availableCommands}`);
+    
+    document.querySelectorAll(".clickable-command").forEach((element) => {
+      // Cast to HTMLElement before adding event listener
+      (element as HTMLElement).addEventListener("click", () => {
+        if (terminalInputRef.current) {
+          terminalInputRef.current.value = (element as HTMLElement).innerText;
+          terminalInputRef.current.focus();
+        }
       });
-    },
-    joke: () =>
-      "Why do programmers prefer dark mode? Because the light attracts bugs!",
-    meme: () => {
-      const memes = ["https://i.imgflip.com/8zstno.jpg"];
-      const randomMeme = memes[Math.floor(Math.random() * memes.length)];
-      return `<img src="${randomMeme}" alt="Meme" style="max-width:100%; width: 200px; height: 400px;">`;
-    },
-    return: () => onClose(),
-  };
+    });
+  },
+  joke: () => "Why do programmers prefer dark mode? Because the light attracts bugs!",
+  meme: () => {
+    const memes = [
+      "https://i.imgflip.com/8zstno.jpg",
+    ];
+    const randomMeme = memes[Math.floor(Math.random() * memes.length)];
+    return `<img src="${randomMeme}" alt="Meme" style="max-width:100%; width: 200px; height: 400px;">`;
+  },
+  return: () => onClose(),
+};
+
 
   const handleCommand = (input: string) => {
     const command = commands[input];
@@ -734,12 +702,15 @@ const MemeTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   );
 };
 
+
+
 const TerminalMain: React.FC = () => {
   const [showGettingStartedTerminal, setShowGettingStartedTerminal] =
     useState<boolean>(true);
   const [showAboutTeamTerminal, setShowAboutTeamTerminal] =
     useState<boolean>(true);
-  const [showCareersTerminal, setShowCareersTerminal] = useState<boolean>(true);
+  const [showCareersTerminal, setShowCareersTerminal] =
+    useState<boolean>(true);
   const [showMemeTerminal, setShowMemeTerminal] = useState<boolean>(false);
 
   useEffect(() => {
@@ -750,7 +721,11 @@ const TerminalMain: React.FC = () => {
     ) {
       setShowMemeTerminal(true);
     }
-  }, [showGettingStartedTerminal, showAboutTeamTerminal, showCareersTerminal]);
+  }, [
+    showGettingStartedTerminal,
+    showAboutTeamTerminal,
+    showCareersTerminal,
+  ]);
 
   return (
     <main style={appStyles.main}>
@@ -766,7 +741,9 @@ const TerminalMain: React.FC = () => {
           <AboutTeamTerminal onClose={() => setShowAboutTeamTerminal(false)} />
         )}
         {showCareersTerminal && (
-          <CareersTerminal onClose={() => setShowCareersTerminal(false)} />
+          <CareersTerminal
+            onClose={() => setShowCareersTerminal(false)}
+          />
         )}
       </div>
       {showMemeTerminal && (
@@ -782,5 +759,7 @@ const TerminalMain: React.FC = () => {
     </main>
   );
 };
+
+
 
 export default TerminalMain;
