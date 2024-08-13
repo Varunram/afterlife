@@ -6,7 +6,6 @@ import { ResizableBox } from "react-resizable";
 import "react-resizable/css/styles.css";
 import "../app/globals.css";
 
-// Define the type for your style objects
 interface TerminalStyles {
   terminalContainer: React.CSSProperties;
   terminalHeader: React.CSSProperties;
@@ -16,8 +15,6 @@ interface TerminalStyles {
 }
 
 
-
-// Terminal Styles
 const terminalStyles: TerminalStyles = {
   terminalContainer: {
     border: "1px solid",
@@ -55,14 +52,14 @@ const terminalStyles: TerminalStyles = {
   },
 };
 
-// Define the type for your style objects
+
 interface AppStyles {
   main: React.CSSProperties;
   terminalTop: React.CSSProperties;
   terminalBottom: React.CSSProperties;
 }
 
-// App Styles for Triangular Layout
+
 const appStyles: AppStyles = {
   main: {
     display: "flex",
@@ -108,7 +105,7 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
         "getting-started-input"
       ) as HTMLInputElement;
 
-      // Add event listener for the help command click
+
       const helpCommandElement = document.getElementById("help-command");
       if (helpCommandElement) {
         helpCommandElement.addEventListener("click", () => {
@@ -119,7 +116,7 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
         });
       }
 
-      // Remove the arrow once the user focuses on the input
+
       if (terminalInputRef.current) {
         terminalInputRef.current.addEventListener("focus", () => {
           const arrowElement =
@@ -186,7 +183,7 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   const commands: { [key: string]: () => string | void } = {
     help: () => {
       const availableCommands = Object.keys(commands)
-        .filter((command) => command !== "help") // Exclude 'help' from the list
+        .filter((command) => command !== "help") 
         .map(
           (command) => `<span class="clickable-command">${command}</span>`
         )
@@ -195,10 +192,9 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
         `Available commands:<br>${availableCommands}`,
         false,
         false
-      ); // No line gap before this output
+      ); 
 
       document.querySelectorAll(".clickable-command").forEach((element) => {
-        // Cast to HTMLElement before setting onclick
         (element as HTMLElement).onclick = () => {
           if (terminalInputRef.current) {
             terminalInputRef.current.value = (element as HTMLElement).innerText;
@@ -477,7 +473,6 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
         "careers-input"
       ) as HTMLInputElement;
 
-      // Add event listener for the jobs command click
       const jobsCommandElement = document.getElementById("jobs-command");
       if (jobsCommandElement) {
         jobsCommandElement.addEventListener("click", () => {
@@ -488,7 +483,6 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
         });
       }
 
-      // Remove the arrow once the user focuses on the input
       if (terminalInputRef.current) {
         terminalInputRef.current.addEventListener("focus", () => {
           const arrowElement =
@@ -526,7 +520,7 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     addLineGap = true
   ) => {
     const newElement = document.createElement("p");
-    newElement.innerHTML = addLineGap ? `<br>${text}` : text; // Conditionally add line gap
+    newElement.innerHTML = addLineGap ? `<br>${text}` : text; 
 
     if (isError) {
       newElement.classList.add("error");
@@ -564,10 +558,9 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
         `Available commands:<br>${availableCommands}`,
         false,
         false
-      ); // No line gap before this output
+      );
 
       document.querySelectorAll(".clickable-command").forEach((element) => {
-        // Cast to HTMLElement before setting onclick
         (element as HTMLElement).onclick = () => {
           if (terminalInputRef.current) {
             terminalInputRef.current.value = (element as HTMLElement).innerText;
@@ -675,7 +668,6 @@ const MemeTerminal: React.FC<TerminalProps> = ({ onClose }) => {
         });
       }
   
-      // Remove the arrow once the user focuses on the input
       if (terminalInputRef.current) {
         terminalInputRef.current.addEventListener("focus", () => {
           const arrowElement = terminalBodyRef.current?.querySelector('.input-arrow');
@@ -726,7 +718,6 @@ const commands: { [key: string]: () => string | void } = {
     appendToTerminal(`Available commands:<br>${availableCommands}`);
     
     document.querySelectorAll(".clickable-command").forEach((element) => {
-      // Cast to HTMLElement before adding event listener
       (element as HTMLElement).addEventListener("click", () => {
         if (terminalInputRef.current) {
           terminalInputRef.current.value = (element as HTMLElement).innerText;
