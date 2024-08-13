@@ -30,7 +30,7 @@ const terminalStyles: TerminalStyles = {
   terminalHeader: {
     padding: "10px",
     cursor: "move",
-    borderBottom: "2px solid #ff8c00",
+    borderBottom: "2px solid #009413",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -51,6 +51,7 @@ const terminalStyles: TerminalStyles = {
     alignItems: "center",
     justifyContent: "center",
     fontSize: "12px",
+    
   },
 };
 
@@ -97,23 +98,34 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   useEffect(() => {
     if (terminalBodyRef.current) {
       terminalBodyRef.current.innerHTML = `
-                <p>Welcome to Warp!</p>
-                <p>Type '<span class="clickable-command" id="help-command">help</span>' to display the commands</p>
-                <div class="input-line">
-                    <span class="prompt">$</span>
-                    <input type="text" id="getting-started-input" autocomplete="off">
-                </div>`;
+        <p>Type '<span class="clickable-command" id="help-command">help</span>' to get started.</p>
+        <div class="input-line" style="position: relative;">
+          <div class="input-arrow"></div>
+          <span class="prompt">$</span>
+          <input type="text" id="getting-started-input" autocomplete="off">
+        </div>`;
       terminalInputRef.current = document.getElementById(
         "getting-started-input"
       ) as HTMLInputElement;
 
       // Add event listener for the help command click
-      const helpCommandElement = document.getElementById('help-command');
+      const helpCommandElement = document.getElementById("help-command");
       if (helpCommandElement) {
-        helpCommandElement.addEventListener('click', () => {
+        helpCommandElement.addEventListener("click", () => {
           if (terminalInputRef.current) {
-            terminalInputRef.current.value = 'help';
+            terminalInputRef.current.value = "help";
             terminalInputRef.current.focus();
+          }
+        });
+      }
+
+      // Remove the arrow once the user focuses on the input
+      if (terminalInputRef.current) {
+        terminalInputRef.current.addEventListener("focus", () => {
+          const arrowElement =
+            terminalBodyRef.current?.querySelector(".input-arrow");
+          if (arrowElement) {
+            arrowElement.remove();
           }
         });
       }
@@ -139,7 +151,11 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     };
   }, []);
 
-  const appendToTerminal = (text: string, isError = false, addLineGap = true) => {
+  const appendToTerminal = (
+    text: string,
+    isError = false,
+    addLineGap = true
+  ) => {
     const newElement = document.createElement("p");
     newElement.innerHTML = addLineGap ? `<br>${text}` : text; // Conditionally add line gap
 
@@ -167,24 +183,30 @@ const GettingStartedTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     }
   };
 
-const commands: { [key: string]: () => string | void } = {
-  help: () => {
-    const availableCommands = Object.keys(commands)
-      .filter((command) => command !== "help")
-      .map((command) => `<span class="clickable-command">${command}</span>`)
-      .join("<br>");
-    appendToTerminal(`Available commands:<br>${availableCommands}`, false, false); // No line gap before this output
-    
-    // Cast to HTMLElement when assigning onclick
-    document.querySelectorAll(".clickable-command").forEach((element) => {
-      (element as HTMLElement).onclick = () => {
-        if (terminalInputRef.current) {
-          terminalInputRef.current.value = (element as HTMLElement).innerText;
-          terminalInputRef.current.focus();
-        }
-      };
-    });
-  },
+  const commands: { [key: string]: () => string | void } = {
+    help: () => {
+      const availableCommands = Object.keys(commands)
+        .filter((command) => command !== "help") // Exclude 'help' from the list
+        .map(
+          (command) => `<span class="clickable-command">${command}</span>`
+        )
+        .join("<br>");
+      appendToTerminal(
+        `Available commands:<br>${availableCommands}`,
+        false,
+        false
+      ); // No line gap before this output
+
+      document.querySelectorAll(".clickable-command").forEach((element) => {
+        // Cast to HTMLElement before setting onclick
+        (element as HTMLElement).onclick = () => {
+          if (terminalInputRef.current) {
+            terminalInputRef.current.value = (element as HTMLElement).innerText;
+            terminalInputRef.current.focus();
+          }
+        };
+      });
+    },
   docs: () => "Visit https://docs.joinwarp.com to get started.",
   support: () => "Email support@joinwarp.com for assistance.",
   community: () => "Join our community on Discord and GitHub.",
@@ -193,69 +215,69 @@ const commands: { [key: string]: () => string | void } = {
   },
 };
 
-  
+const handleCommand = (input: string) => {
+  const command = commands[input];
+  if (command) {
+    const response = command();
+    if (response) appendToTerminal(response);
+  } else {
+    const response = `Command not found: ${input}`;
+    appendToTerminal(response, true);
+  }
 
-  const handleCommand = (input: string) => {
-    const command = commands[input];
-    if (command) {
-      const response = command();
-      if (response) appendToTerminal(response);
-    } else {
-      const response = `Command not found: ${input}`;
-      appendToTerminal(response, true);
-    }
+  if (terminalInputRef.current) {
+    terminalInputRef.current.value = "";
+    terminalInputRef.current.focus();
+  }
+};
 
-    if (terminalInputRef.current) {
-      terminalInputRef.current.value = "";
-      terminalInputRef.current.focus();
-    }
-  };
-
-  return (
-    <Draggable handle=".terminal-header">
-      <ResizableBox
-        width={300}
-        height={200}
-        minConstraints={[150, 100]}
-        maxConstraints={[600, 400]}
-        resizeHandles={["se"]}
+return (
+  <Draggable handle=".terminal-header">
+    <ResizableBox
+      width={350}
+      height={250}
+      minConstraints={[150, 100]}
+      maxConstraints={[600, 400]}
+      resizeHandles={["se"]}
+    >
+      <div
+        className="terminal-container"
+        style={{
+          ...terminalStyles.terminalContainer,
+          height: "100%",
+          width: "100%",
+        }}
       >
         <div
-          className="terminal-container"
-          style={{
-            ...terminalStyles.terminalContainer,
-            height: "100%",
-            width: "100%",
-          }}
+          className="terminal-header"
+          style={terminalStyles.terminalHeader}
         >
           <div
-            className="terminal-header"
-            style={terminalStyles.terminalHeader}
+            className="terminal-title"
+            style={terminalStyles.terminalTitle}
           >
-            <div
-              className="terminal-title"
-              style={terminalStyles.terminalTitle}
-            >
-              Getting Started
-            </div>
-            <button onClick={onClose} style={terminalStyles.closeButton}>
-              X
-            </button>
+            Getting Started
           </div>
-          <div
-            className="terminal-body"
-            ref={terminalBodyRef}
-            style={terminalStyles.terminalBody}
-          ></div>
+          <button onClick={onClose} style={terminalStyles.closeButton}>
+            X
+          </button>
         </div>
-      </ResizableBox>
-    </Draggable>
-  );
+        <div
+          className="terminal-body"
+          ref={terminalBodyRef}
+          style={terminalStyles.terminalBody}
+        ></div>
+      </div>
+    </ResizableBox>
+  </Draggable>
+);
 };
 
 
 const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
-  const [lastErrorElement, setLastErrorElement] = useState<HTMLElement | null>(null);
+  const [lastErrorElement, setLastErrorElement] = useState<HTMLElement | null>(
+    null
+  );
   const terminalBodyRef = useRef<HTMLDivElement>(null);
   const terminalInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -263,9 +285,10 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     if (terminalBodyRef.current) {
       terminalBodyRef.current.innerHTML = `
         <p>Type '<span class="clickable-command" id="about-command">about</span>' to know about the team</p>
-        <div class="input-line">
-            <span class="prompt">$</span>
-            <input type="text" id="about-team-input" autocomplete="off">
+        <div class="input-line" style="position: relative;">
+          <div class="input-arrow"></div>
+          <span class="prompt">$</span>
+          <input type="text" id="about-team-input" autocomplete="off">
         </div>`;
       terminalInputRef.current = document.getElementById(
         "about-team-input"
@@ -281,10 +304,24 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
           }
         });
       }
+
+      // Remove the arrow once the user focuses on the input
+      if (terminalInputRef.current) {
+        terminalInputRef.current.addEventListener("focus", () => {
+          const arrowElement =
+            terminalBodyRef.current?.querySelector(".input-arrow");
+          if (arrowElement) {
+            arrowElement.remove();
+          }
+        });
+      }
     }
 
     const handleEnterKey = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && document.activeElement === terminalInputRef.current) {
+      if (
+        event.key === "Enter" &&
+        document.activeElement === terminalInputRef.current
+      ) {
         event.preventDefault();
         const input = terminalInputRef.current?.value.trim().toLowerCase();
         if (input) {
@@ -300,7 +337,11 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     };
   }, []);
 
-  const appendToTerminal = (text: string, isError = false, addLineGap = true) => {
+  const appendToTerminal = (
+    text: string,
+    isError = false,
+    addLineGap = true
+  ) => {
     const newElement = document.createElement("p");
     newElement.innerHTML = addLineGap ? `<br>${text}` : text; // Conditionally add line gap
 
@@ -332,10 +373,16 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     about: () => {
       const availableCommands = Object.keys(commands)
         .filter((command) => command !== "about") // Exclude 'about' from the list
-        .map((command) => `<span class="clickable-command">${command}</span>`)
+        .map(
+          (command) => `<span class="clickable-command">${command}</span>`
+        )
         .join("<br>");
-      appendToTerminal(`Available commands:<br>${availableCommands}`, false, false); // No line gap before this output
-      
+      appendToTerminal(
+        `Available commands:<br>${availableCommands}`,
+        false,
+        false
+      ); // No line gap before this output
+
       document.querySelectorAll(".clickable-command").forEach((element) => {
         // Cast to HTMLElement before setting onclick
         (element as HTMLElement).onclick = () => {
@@ -348,9 +395,8 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     },
     info: () => "Warp is a futuristic platform for developers.",
     team: () => "Our team consists of talented developers passionate about innovation.",
-    payroll: () => "Warp offers a transparent and competitive payroll system. Do the start command to start payrolling now.",
+    payroll: () => "Warp offers a transparent and competitive payroll system.",
   };
-  
 
   const handleCommand = (input: string) => {
     const command = commands[input];
@@ -371,8 +417,8 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   return (
     <Draggable handle=".terminal-header">
       <ResizableBox
-        width={300}
-        height={200}
+        width={350}
+        height={250}
         minConstraints={[150, 100]}
         maxConstraints={[600, 400]}
         resizeHandles={["se"]}
@@ -410,8 +456,11 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   );
 };
 
+
 const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
-  const [lastErrorElement, setLastErrorElement] = useState<HTMLElement | null>(null);
+  const [lastErrorElement, setLastErrorElement] = useState<HTMLElement | null>(
+    null
+  );
   const terminalBodyRef = useRef<HTMLDivElement>(null);
   const terminalInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -419,9 +468,10 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     if (terminalBodyRef.current) {
       terminalBodyRef.current.innerHTML = `
         <p>Type '<span class="clickable-command" id="jobs-command">jobs</span>' to explore career opportunities</p>
-        <div class="input-line">
-            <span class="prompt">$</span>
-            <input type="text" id="careers-input" autocomplete="off">
+        <div class="input-line" style="position: relative;">
+          <div class="input-arrow"></div>
+          <span class="prompt">$</span>
+          <input type="text" id="careers-input" autocomplete="off">
         </div>`;
       terminalInputRef.current = document.getElementById(
         "careers-input"
@@ -437,10 +487,24 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
           }
         });
       }
+
+      // Remove the arrow once the user focuses on the input
+      if (terminalInputRef.current) {
+        terminalInputRef.current.addEventListener("focus", () => {
+          const arrowElement =
+            terminalBodyRef.current?.querySelector(".input-arrow");
+          if (arrowElement) {
+            arrowElement.remove();
+          }
+        });
+      }
     }
 
     const handleEnterKey = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && document.activeElement === terminalInputRef.current) {
+      if (
+        event.key === "Enter" &&
+        document.activeElement === terminalInputRef.current
+      ) {
         event.preventDefault();
         const input = terminalInputRef.current?.value.trim().toLowerCase();
         if (input) {
@@ -456,7 +520,11 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     };
   }, []);
 
-  const appendToTerminal = (text: string, isError = false, addLineGap = true) => {
+  const appendToTerminal = (
+    text: string,
+    isError = false,
+    addLineGap = true
+  ) => {
     const newElement = document.createElement("p");
     newElement.innerHTML = addLineGap ? `<br>${text}` : text; // Conditionally add line gap
 
@@ -487,15 +555,25 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   const commands: { [key: string]: () => string | void } = {
     jobs: () => {
       const availableCommands = Object.keys(commands)
-        .filter(command => command !== 'jobs')
-        .map(command => `<span class="clickable-command">${command}</span>`)
-        .join('<br>');
-      appendToTerminal(`Available commands:<br>${availableCommands}`, false, false); // No line gap before this output
-      document.querySelectorAll('.clickable-command').forEach(element => {
-        element.addEventListener('click', () => {
-          terminalInputRef.current!.value = (element as HTMLElement).innerText;
-          terminalInputRef.current!.focus();
-        });
+        .filter((command) => command !== "jobs") // Exclude 'jobs' from the list
+        .map(
+          (command) => `<span class="clickable-command">${command}</span>`
+        )
+        .join("<br>");
+      appendToTerminal(
+        `Available commands:<br>${availableCommands}`,
+        false,
+        false
+      ); // No line gap before this output
+
+      document.querySelectorAll(".clickable-command").forEach((element) => {
+        // Cast to HTMLElement before setting onclick
+        (element as HTMLElement).onclick = () => {
+          if (terminalInputRef.current) {
+            terminalInputRef.current.value = (element as HTMLElement).innerText;
+            terminalInputRef.current.focus();
+          }
+        };
       });
     },
     careers: () => 'Explore our open positions in the Careers section.',
@@ -522,8 +600,8 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   return (
     <Draggable handle=".terminal-header">
       <ResizableBox
-        width={300}
-        height={200}
+        width={350}
+        height={250}
         minConstraints={[150, 100]}
         maxConstraints={[600, 400]}
         resizeHandles={["se"]}
@@ -569,23 +647,24 @@ const MemeTerminal: React.FC<TerminalProps> = ({ onClose }) => {
     if (terminalBodyRef.current) {
       terminalBodyRef.current.innerHTML = `
         <pre>⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⢰⣿⡿⠗⠀⠠⠄⡀⠀⠀⠀⠀
-⠀⠀⠀⠀⡜⠁⠀⠀⠀⠀⠀⠈⠑⢶⣶⡄
-⢀⣶⣦⣸⠀⢼⣟⡇⠀⠀⢀⣀⠀⠘⡿⠃
-⠀⢿⣿⣿⣄⠒⠀⠠⢶⡂⢫⣿⢇⢀⠃⠀
-⠀⠈⠻⣿⣿⣿⣶⣤⣀⣀⣀⣂⡠⠊⠀⠀
-⠀⠀⠀⠃⠀⠀⠉⠙⠛⠿⣿⣿⣧⠀⠀⠀
-⠀⠀⠘⡀⠀⠀⠀⠀⠀⠀⠘⣿⣿⡇⠀⠀
-⠀⠀⠀⣷⣄⡀⠀⠀⠀⢀⣴⡟⠿⠃⠀⠀
-⠀⠀⠀⢻⣿⣿⠉⠉⢹⣿⣿⠁⠀⠀⠀⠀
-⠀⠀⠀⠀⠉⠁⠀⠀⠀⠉⠁⠀⠀⠀⠀⠀</pre>
+  ⠀⠀⠀⠀⢰⣿⡿⠗⠀⠠⠄⡀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⡜⠁⠀⠀⠀⠀⠀⠈⠑⢶⣶⡄
+  ⢀⣶⣦⣸⠀⢼⣟⡇⠀⠀⢀⣀⠀⠘⡿⠃
+  ⠀⢿⣿⣿⣄⠒⠀⠠⢶⡂⢫⣿⢇⢀⠃⠀
+  ⠀⠈⠻⣿⣿⣿⣶⣤⣀⣀⣀⣂⡠⠊⠀⠀
+  ⠀⠀⠀⠃⠀⠀⠉⠙⠛⠿⣿⣿⣧⠀⠀⠀
+  ⠀⠀⠘⡀⠀⠀⠀⠀⠀⠀⠘⣿⣿⡇⠀⠀
+  ⠀⠀⠀⣷⣄⡀⠀⠀⠀⢀⣴⡟⠿⠃⠀⠀
+  ⠀⠀⠀⢻⣿⣿⠉⠉⢹⣿⣿⠁⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠉⠁⠀⠀⠀⠉⠁⠀⠀⠀⠀⠀</pre>
         <p>Welcome to the Meme Terminal! Type '<span class="clickable-command" id="me-command">me</span>' for available commands.</p>
-        <div class="input-line">
-            <span class="prompt">$</span>
-            <input type="text" id="meme-input" autocomplete="off">
+        <div class="input-line" style="position: relative;">
+          <div class="input-arrow"></div>
+          <span class="prompt">$</span>
+          <input type="text" id="meme-input" autocomplete="off">
         </div>`;
       terminalInputRef.current = document.getElementById("meme-input") as HTMLInputElement;
-
+  
       const meCommandElement = document.getElementById("me-command");
       if (meCommandElement) {
         meCommandElement.addEventListener("click", () => {
@@ -595,8 +674,18 @@ const MemeTerminal: React.FC<TerminalProps> = ({ onClose }) => {
           }
         });
       }
+  
+      // Remove the arrow once the user focuses on the input
+      if (terminalInputRef.current) {
+        terminalInputRef.current.addEventListener("focus", () => {
+          const arrowElement = terminalBodyRef.current?.querySelector('.input-arrow');
+          if (arrowElement) {
+            arrowElement.remove();
+          }
+        });
+      }
     }
-
+  
     const handleEnterKey = (event: KeyboardEvent) => {
       if (event.key === "Enter" && document.activeElement === terminalInputRef.current) {
         event.preventDefault();
@@ -606,13 +695,14 @@ const MemeTerminal: React.FC<TerminalProps> = ({ onClose }) => {
         }
       }
     };
-
+  
     document.addEventListener("keydown", handleEnterKey);
-
+  
     return () => {
       document.removeEventListener("keydown", handleEnterKey);
     };
   }, []);
+  
 
   const appendToTerminal = (text: string) => {
     const newElement = document.createElement("p");
@@ -645,6 +735,9 @@ const commands: { [key: string]: () => string | void } = {
       });
     });
   },
+  lol: () => '😂',
+  brb: () => 'Be right back!',
+  gtg: () => 'Got to go!',
   joke: () => "Why do programmers prefer dark mode? Because the light attracts bugs!",
   meme: () => {
     const memes = [
