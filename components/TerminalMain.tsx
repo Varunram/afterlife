@@ -231,7 +231,7 @@ return (
   <Draggable handle=".terminal-header">
     <ResizableBox
       width={400}
-      height={276}
+      height={275}
       minConstraints={[150, 100]}
       maxConstraints={[600, 400]}
       resizeHandles={["se"]}
