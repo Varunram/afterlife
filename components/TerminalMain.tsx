@@ -230,8 +230,8 @@ const handleCommand = (input: string) => {
 return (
   <Draggable handle=".terminal-header">
     <ResizableBox
-      width={350}
-      height={250}
+      width={400}
+      height={300}
       minConstraints={[150, 100]}
       maxConstraints={[600, 400]}
       resizeHandles={["se"]}
@@ -413,8 +413,8 @@ const AboutTeamTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   return (
     <Draggable handle=".terminal-header">
       <ResizableBox
-        width={350}
-        height={250}
+      width={400}
+      height={300}
         minConstraints={[150, 100]}
         maxConstraints={[600, 400]}
         resizeHandles={["se"]}
@@ -593,8 +593,8 @@ const CareersTerminal: React.FC<TerminalProps> = ({ onClose }) => {
   return (
     <Draggable handle=".terminal-header">
       <ResizableBox
-        width={350}
-        height={250}
+      width={400}
+      height={300}
         minConstraints={[150, 100]}
         maxConstraints={[600, 400]}
         resizeHandles={["se"]}
